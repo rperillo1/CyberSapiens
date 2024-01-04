@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MsalProvider, useMsal } from '@azure/msal-react';
 import { EventType } from '@azure/msal-browser';
@@ -10,21 +10,53 @@ import { compareIssuingPolicy } from './utils/claimUtils';
 
 import './styles/App.css';
 
+
 const Pages = () => {
+    const [isTokenRequestInProgress, setTokenRequestInProgress] = useState(false);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
     /**
      * useMsal is hook that returns the PublicClientApplication instance,
      * an array of all accounts currently signed in and an inProgress value
      * that tells you what msal is currently doing. For more, visit:
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-react/docs/hooks.md
      */
-    const { instance } = useMsal();
+    const { instance, accounts } = useMsal();
 
     useEffect(() => {
         const callbackId = instance.addEventCallback((event) => {
+            if (event.eventType === EventType.LOGIN_SUCCESS) {
+                setIsUserLoggedIn(true);
+            } else if (event.eventType === EventType.LOGOUT_SUCCESS) {
+                setIsUserLoggedIn(false);
+            }
             if (
                 (event.eventType === EventType.LOGIN_SUCCESS || event.eventType === EventType.ACQUIRE_TOKEN_SUCCESS) &&
                 event.payload.account
             ) {
+                console.log('event: ', event)
+                async function fetchData(url) {
+                    try {
+                        const response = await fetch(`https://cybersapien-api-service.azurewebsites.net/api/character`, {
+                            headers: {
+                                'x-functions-key': '2pfvUxN3khG8FqJcH-pSwyIVZW1idDJBdcG-4XdltDCBAzFuWWRsiw==',
+                                'Authorization': 'Bearer ' + event.payload.accessToken
+                            }
+                        });
+                        console.log('RES: ', response)
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        const data = await response.json();
+                        console.log('DATA: ', data)
+                        return response;
+                    } catch (error) {
+                        console.error('Error:', error);
+                        throw error;
+                    }
+                }
+
+                fetchData()
+
 
                 /**
                  * For the purpose of setting an active account for UI update, we want to consider only the auth
@@ -97,11 +129,11 @@ const Pages = () => {
     );
 };
 
-const  App = ({ instance, APIinstance }) => {
+const App = ({ instance, APIinstance }) => {
     return (
         <MsalProvider instance={instance}>
             <PageLayout>
-              <Pages />
+                <Pages />
             </PageLayout>
         </MsalProvider>
     );

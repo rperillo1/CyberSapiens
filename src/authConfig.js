@@ -30,6 +30,7 @@ export const b2cPolicies = {
     authorityDomain: 'csapienplayers.b2clogin.com',
 };
 
+
 /**
  * Configuration object to be passed to MSAL instance on creation.
  * For a full list of MSAL.js configuration parameters, visit:
@@ -82,8 +83,7 @@ export const msalB2CConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-    // scopes: ['openid', 'given_name', 'email', 'profile', 'offline_access'],
-    scopes: ['openid', 'profile'],
+    scopes: ['openid', 'profile', 'https://csapienplayers.onmicrosoft.com/cee14050-0eea-48f2-b834-1e905024dc8f/api.read'],
 };
 
 

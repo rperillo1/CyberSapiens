@@ -3,12 +3,8 @@ import { useMsal } from '@azure/msal-react';
 import { Container } from 'react-bootstrap';
 import { IdTokenData } from '../components/DataDisplay';
 import { useEffect, useState } from 'react';
-import useFetchWithMsal from '../hooks/useFetchWithMsal';
+// import useFetchWithMsal from '../hooks/useFetchWithMsal';
 
-const apiScopeRequest = {
-    scopes: ['api://5ae71ebf-253d-465e-8131-0c0a2fcd27b7/csapien.api.read'], 
-    // account: userAccount, // You might need to specify the account
-};
 
 /***
  * Component to detail ID token claims with a description for each claim. For more details on ID token claims, please check the following links:
@@ -22,11 +18,19 @@ export const Home = () => {
 
     // useEffect(() => {
     //     console.log('instance: ', instance)
+    //     console.log('accounts: ', accounts)
+    //     const bearerToken = instance
+    //         .getActiveAccount(
+    //             (account) =>
+    //                 console.log('!account: ', account)
+            
+    //         )
+            
     //     async function fetchData(url) {
     //         try {
     //             const response = await fetch(`https://cybersapien-api-service.azurewebsites.net/api/character`, {
     //                 headers: {
-    //                     'x-functions-key': ''
+    //                     'x-functions-key': '2pfvUxN3khG8FqJcH-pSwyIVZW1idDJBdcG-4XdltDCBAzFuWWRsiw=='
     //                 }
     //             });
     //             console.log('RES: ', response)
@@ -43,34 +47,6 @@ export const Home = () => {
     //     }
     //     fetchData()
     // }, []);
-
-    const getApiToken = async () => {
-        if (accounts.length > 0 && !isTokenRequestInProgress) {
-            setTokenRequestInProgress(true);
-            try {
-                const response = await instance.acquireTokenSilent({
-                    ...apiScopeRequest,
-                    account: accounts[0]
-                });
-                console.log('Token acquired silently: ', response.accessToken);
-            } catch (error) {
-                console.error('Silent token acquisition failed, acquiring token using popup', error);
-                try {
-                    const response = await instance.acquireTokenPopup(apiScopeRequest);
-                    console.log('Token acquired via popup: ', response.accessToken);
-                } catch (popupError) {
-                    console.error('Token acquisition via popup failed', popupError);
-                }
-            } finally {
-                setTokenRequestInProgress(false);
-            }
-        }
-    };
-
-    useEffect(() => {
-  
-        getApiToken();
-    }, [accounts]); 
 
     return (
         <>

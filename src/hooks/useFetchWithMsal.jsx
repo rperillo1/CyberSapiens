@@ -12,14 +12,13 @@ import { useMsal, useMsalAuthentication } from "@azure/msal-react";
  * @returns 
  */
 const useFetchWithMsal = (msalRequest) => {
-    // const { instance } = useMsal();
+    const { instance } = useMsal();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
 
     const { result, error: msalError } = useMsalAuthentication(InteractionType.Redirect, {
         ...msalRequest,
-        // account: APIinstance.getActiveAccount(),
         redirectUri: '/redirect'
     });
 
