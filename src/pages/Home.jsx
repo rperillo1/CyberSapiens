@@ -16,38 +16,6 @@ export const Home = () => {
     const activeAccount = instance.getActiveAccount();
     const [isTokenRequestInProgress, setTokenRequestInProgress] = useState(false);
 
-    // useEffect(() => {
-    //     console.log('instance: ', instance)
-    //     console.log('accounts: ', accounts)
-    //     const bearerToken = instance
-    //         .getActiveAccount(
-    //             (account) =>
-    //                 console.log('!account: ', account)
-            
-    //         )
-            
-    //     async function fetchData(url) {
-    //         try {
-    //             const response = await fetch(`https://cybersapien-api-service.azurewebsites.net/api/character`, {
-    //                 headers: {
-    //                     'x-functions-key': '2pfvUxN3khG8FqJcH-pSwyIVZW1idDJBdcG-4XdltDCBAzFuWWRsiw=='
-    //                 }
-    //             });
-    //             console.log('RES: ', response)
-    //             if (!response.ok) {
-    //                 throw new Error('Network response was not ok');
-    //             }
-    //             const data = await response.json();
-    //             console.log('DATA: ', data)
-    //             return data;
-    //         } catch (error) {
-    //             console.error('Error:', error);
-    //             throw error;
-    //         }
-    //     }
-    //     fetchData()
-    // }, []);
-
     return (
         <>
             <AuthenticatedTemplate>
