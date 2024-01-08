@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MsalProvider, useMsal } from '@azure/msal-react';
 import { EventType } from '@azure/msal-browser';
+import axios from 'axios';
 
 import { PageLayout } from './components/PageLayout';
 import { Home } from './pages/Home';
@@ -33,30 +34,6 @@ const Pages = () => {
                 (event.eventType === EventType.LOGIN_SUCCESS || event.eventType === EventType.ACQUIRE_TOKEN_SUCCESS) &&
                 event.payload.account
             ) {
-                console.log('event: ', event)
-                async function fetchData(url) {
-                    try {
-                        const response = await fetch(`https://cybersapien-api-service.azurewebsites.net/api/character`, {
-                            headers: {
-                                'x-functions-key': '2pfvUxN3khG8FqJcH-pSwyIVZW1idDJBdcG-4XdltDCBAzFuWWRsiw==',
-                                'Authorization': 'Bearer ' + event.payload.accessToken
-                            }
-                        });
-                        console.log('RES: ', response)
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        const data = await response.json();
-                        console.log('DATA: ', data)
-                        return response;
-                    } catch (error) {
-                        console.error('Error:', error);
-                        throw error;
-                    }
-                }
-
-                fetchData()
-
 
                 /**
                  * For the purpose of setting an active account for UI update, we want to consider only the auth
@@ -91,12 +68,12 @@ const Pages = () => {
                  * you can replace the code below with the same pattern used for handling the return from
                  * profile edit flow
                  */
-                if (compareIssuingPolicy(event.payload.idTokenClaims, b2cPolicies.names.forgotPassword)) {
-                    let signUpSignInFlowRequest = {
-                        authority: b2cPolicies.authorities.signUpSignIn.authority,
-                    };
-                    instance.loginRedirect(signUpSignInFlowRequest);
-                }
+                // if (compareIssuingPolicy(event.payload.idTokenClaims, b2cPolicies.names.forgotPassword)) {
+                //     let signUpSignInFlowRequest = {
+                //         authority: b2cPolicies.authorities.signUpSignIn.authority,
+                //     };
+                //     instance.loginRedirect(signUpSignInFlowRequest);
+                // }
             }
 
             if (event.eventType === EventType.LOGIN_FAILURE) {

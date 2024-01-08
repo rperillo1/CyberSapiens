@@ -3,6 +3,7 @@ import {
     useCallback,
 } from 'react';
 
+import axios from 'axios';
 import { InteractionType } from '@azure/msal-browser';
 import { useMsal, useMsalAuthentication } from "@azure/msal-react";
 
@@ -17,9 +18,10 @@ const useFetchWithMsal = (msalRequest) => {
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
 
-    const { result, error: msalError } = useMsalAuthentication(InteractionType.Redirect, {
+    const { result, error: msalError } = useMsalAuthentication(InteractionType.Popup, {
         ...msalRequest,
-        redirectUri: '/redirect'
+        account: instance.getActiveAccount(),
+        redirectUri: '/'
     });
 
     /**
@@ -34,17 +36,13 @@ const useFetchWithMsal = (msalRequest) => {
             setError(msalError);
             return;
         }
-        console.log('Result from useFetchWithMsal: ', result)
+
         if (result) {
             try {
                 let response = null;
-
-                const headers = new Headers();
-                const bearer = `Bearer ${result.accessToken}`; 
-        
-                headers.append("Authorization", bearer);
-                console.log('bearer: ', bearer)
-
+                const headers = {}
+                headers.Authorization = `Bearer ${result.accessToken}`;
+                headers['x-functions-key'] = ''
 
                 if (data) headers.append('Content-Type', 'application/json');
 
@@ -56,13 +54,20 @@ const useFetchWithMsal = (msalRequest) => {
 
                 setIsLoading(true);
 
-                response = await (await fetch(endpoint, options)).json();
-                console.log('response in execute: ', response)
-                setData(response);
+                response = await axios({
+                    method: method, // 'GET', 'POST', etc.
+                    url: endpoint,
+                    headers: options.headers,
+                    data: options.body // for POST, PUT requests
+                });
+
+                console.log("res: ", response.data)
+                setData(response.data);
 
                 setIsLoading(false);
-                return response;
+                return response.data;
             } catch (e) {
+                console.log('error: ', e)
                 setError(e);
                 setIsLoading(false);
                 throw e;

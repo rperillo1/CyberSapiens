@@ -12,18 +12,16 @@ import { useEffect, useState } from 'react';
  * Optional Claims:  https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-optional-claims#v10-and-v20-optional-claims-set
  */
 export const Home = () => {
-    const { instance, accounts } = useMsal();
-    const activeAccount = instance.getActiveAccount();
-    const [isTokenRequestInProgress, setTokenRequestInProgress] = useState(false);
+    // const { instance, accounts } = useMsal();
+    // const activeAccount = instance.getActiveAccount();
+    // const [isTokenRequestInProgress, setTokenRequestInProgress] = useState(false);
 
     return (
         <>
             <AuthenticatedTemplate>
-                {activeAccount ? (
-                    <Container>
-                        <IdTokenData idTokenClaims={activeAccount.idTokenClaims} />
-                    </Container>
-                ) : null}
+                <Container>
+                    <IdTokenData />
+                </Container>
             </AuthenticatedTemplate>
         </>
     );
