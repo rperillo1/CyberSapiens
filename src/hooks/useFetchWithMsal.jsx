@@ -32,19 +32,21 @@ const useFetchWithMsal = (msalRequest) => {
      * @returns JSON response
      */
     const execute = async (method, endpoint, data = null) => {
+        console.log('hit in execute')
         if (msalError) {
             setError(msalError);
             return;
         }
 
         if (result) {
+            console.log('hit in result')
             try {
                 let response = null;
                 const headers = {}
                 headers.Authorization = `Bearer ${result.accessToken}`;
-                headers['x-functions-key'] = ''
+                headers['x-functions-key'] = process.env.REACT_APP_CHARACTER_FUNCTION_KEY;
 
-                if (data) headers.append('Content-Type', 'application/json');
+                if (data) headers['Content-Type'] = 'application/json';
 
                 let options = {
                     method: method,
@@ -53,7 +55,7 @@ const useFetchWithMsal = (msalRequest) => {
                 };
 
                 setIsLoading(true);
-
+                console.log('options: ', options, 'endpoint: ', endpoint, 'method: ', method)
                 response = await axios({
                     method: method, // 'GET', 'POST', etc.
                     url: endpoint,
@@ -63,7 +65,6 @@ const useFetchWithMsal = (msalRequest) => {
 
                 console.log("res: ", response.data)
                 setData(response.data);
-
                 setIsLoading(false);
                 return response.data;
             } catch (e) {

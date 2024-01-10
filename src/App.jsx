@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MsalProvider, useMsal } from '@azure/msal-react';
 import { EventType } from '@azure/msal-browser';
-import axios from 'axios';
+
+import CharacterProvider from './contexts/CharacterContext.tsx';
 
 import { PageLayout } from './components/PageLayout';
 import { Home } from './pages/Home';
@@ -106,12 +107,14 @@ const Pages = () => {
     );
 };
 
-const App = ({ instance, APIinstance }) => {
+const App = ({ instance }) => {
     return (
         <MsalProvider instance={instance}>
-            <PageLayout>
-                <Pages />
-            </PageLayout>
+            <CharacterProvider >
+                <PageLayout>
+                    <Pages />
+                </PageLayout>
+            </CharacterProvider>
         </MsalProvider>
     );
 }
